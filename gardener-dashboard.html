@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a4a2e">
+<title>גנן חכם — דשבורד</title>
+<style>
+:root{
+  --g900:#0f2e1c;--g800:#1a4a2e;--g700:#245e3a;--g500:#3a8a56;
+  --g200:#c8ebd4;--g100:#e8f5ee;--g50:#f4fbf6;
+  --sand:#fafaf7;--ink:#1a1a1a;--ink2:#555;--ink3:#aaa;
+  --line:#e8e8e4;--white:#fff;
+  --amber:#e07a00;--amber-bg:#fff8ee;
+  --red:#c0392b;--red-bg:#fdecea;
+  --blue:#2563eb;--blue-bg:#eff6ff;
+  --r:16px;--r-sm:10px;
+  --sh:0 2px 12px rgba(15,46,28,.08);
+  --sh-lg:0 8px 32px rgba(15,46,28,.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--sand);color:var(--ink);direction:rtl;display:flex;justify-content:center;}
+.app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;background:var(--white);box-shadow:var(--sh-lg);position:relative;}
+
+/* ── AUTH ── */
+.auth-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.auth-hero{background:linear-gradient(160deg,var(--g900),var(--g700));padding:52px 24px 44px;text-align:center;flex-shrink:0;}
+.auth-logo{font-size:56px;margin-bottom:12px;}
+.auth-title{font-size:26px;font-weight:800;color:#fff;margin-bottom:4px;}
+.auth-sub{font-size:14px;color:rgba(255,255,255,.68);}
+.auth-body{padding:28px 24px 48px;flex:1;}
+.field{margin-bottom:15px;}
+.flbl{display:block;font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:6px;}
+.inp{width:100%;border:2px solid var(--line);border-radius:var(--r-sm);padding:14px 15px;font-size:17px;color:var(--ink);background:var(--g50);direction:rtl;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.inp:focus{border-color:var(--g800);background:var(--white);}
+.inp::placeholder{color:var(--ink3);}
+textarea.inp{resize:none;min-height:80px;}
+.cta{width:100%;padding:16px;background:var(--g800);color:#fff;border:none;border-radius:var(--r);font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(26,74,46,.28);transition:opacity .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.cta:active{opacity:.88;transform:scale(.98);}
+.cta.sec{background:var(--g100);color:var(--g800);box-shadow:none;}
+.cta.outline{background:transparent;color:var(--g800);border:2px solid var(--g800);box-shadow:none;}
+.cta.red-btn{background:var(--red-bg);color:var(--red);box-shadow:none;}
+
+/* ── MAIN ── */
+.main-wrap{flex:1;display:none;flex-direction:column;overflow:hidden;}
+.main-wrap.show{display:flex;}
+
+.topbar{background:var(--g800);padding:16px 20px 18px;flex-shrink:0;}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.topbar-greeting{color:rgba(255,255,255,.65);font-size:12px;}
+.topbar-name{color:#fff;font-size:19px;font-weight:800;}
+.t-avatar{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;border:2px solid rgba(255,255,255,.2);overflow:hidden;}
+.t-avatar img{width:100%;height:100%;object-fit:cover;}
+.stats-row{display:flex;gap:8px;}
+.sc{flex:1;background:rgba(255,255,255,.11);border-radius:11px;padding:10px 10px;border:1px solid rgba(255,255,255,.09);}
+.sc-n{color:#fff;font-size:22px;font-weight:800;line-height:1;}
+.sc-l{color:rgba(255,255,255,.62);font-size:10px;margin-top:3px;}
+
+.content{flex:1;overflow-y:auto;padding:14px 16px 8px;}
+.tab-pane{display:none;}
+.tab-pane.show{display:block;}
+
+.bottom-nav{background:var(--white);border-top:1px solid var(--line);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:10px;font-weight:600;cursor:pointer;padding:4px 0;transition:color .2s;}
+.nav-item.act{color:var(--g800);}
+.nav-icon{font-size:22px;line-height:1;}
+
+/* cards */
+.card{background:var(--white);border-radius:var(--r);border:1.5px solid var(--line);padding:16px;margin-bottom:12px;box-shadow:var(--sh);}
+.card-title{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.sec-lbl{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;margin-top:18px;}
+.sec-lbl:first-child{margin-top:0;}
+
+/* appt card */
+.ac{background:var(--white);border-radius:var(--r);border:1.5px solid var(--line);padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:transform .15s;box-shadow:var(--sh);}
+.ac:active{transform:scale(.98);}
+.ac-time{background:var(--g100);border-radius:9px;padding:8px 9px;text-align:center;min-width:52px;flex-shrink:0;}
+.ac-time .t{color:var(--g800);font-size:14px;font-weight:800;}
+.ac-info{flex:1;min-width:0;}
+.ac-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ac-meta{font-size:12px;color:var(--ink3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bdg{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;}
+.bp{background:var(--amber-bg);color:var(--amber);}
+.bc{background:var(--g100);color:var(--g800);}
+.bd{background:#f0f0f0;color:var(--ink3);}
+.bx{background:var(--red-bg);color:var(--red);}
+
+/* next card */
+.next-card{background:linear-gradient(135deg,var(--g800),var(--g700));border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.next-lbl{font-size:11px;color:rgba(255,255,255,.65);margin-bottom:5px;font-weight:600;letter-spacing:.4px;}
+.next-name{font-size:19px;font-weight:800;color:#fff;margin-bottom:3px;}
+.next-meta{font-size:13px;color:rgba(255,255,255,.7);}
+.next-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.next-time{font-size:26px;font-weight:800;color:#fff;}
+.next-btns{display:flex;gap:7px;}
+.next-btn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:7px 13px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
+
+/* alert */
+.alert-card{border-radius:var(--r);padding:13px 15px;margin-bottom:12px;display:flex;align-items:center;gap:11px;border:1.5px solid #f5d08a;background:var(--amber-bg);cursor:pointer;}
+.alert-icon{font-size:22px;flex-shrink:0;}
+.alert-txt{flex:1;}
+.alert-title{font-size:14px;font-weight:700;}
+.alert-sub{font-size:12px;color:var(--ink2);margin-top:2px;}
+.alert-action{background:var(--amber);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;}
+
+/* calendar */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-nav-btn{width:36px;height:36px;border:none;background:var(--g100);border-radius:9px;font-size:18px;cursor:pointer;color:var(--g800);display:flex;align-items:center;justify-content:center;}
+.cal-month{font-size:16px;font-weight:800;}
+.dhdr{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
+.dh{text-align:center;font-size:10px;font-weight:700;color:var(--ink3);}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cd{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);position:relative;transition:all .15s;border:2px solid transparent;}
+.cd.emp{pointer-events:none;}
+.cd.dis{color:var(--ink3);pointer-events:none;opacity:.35;}
+.cd.has{background:var(--g50);border-color:var(--g200);}
+.cd.tod{background:var(--g100)!important;color:var(--g800)!important;font-weight:800;}
+.cd.sel{background:var(--g800)!important;color:#fff!important;border-color:var(--g800);}
+.cdot{width:4px;height:4px;border-radius:50%;background:var(--g500);position:absolute;bottom:2px;display:none;}
+.cd.has .cdot{display:block;}
+.cd.sel .cdot{background:rgba(255,255,255,.4);}
+
+/* profile */
+.avatar-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:20px;gap:8px;}
+.avatar-circle{width:96px;height:96px;border-radius:50%;background:var(--g100);border:3px solid var(--g200);display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;overflow:hidden;cursor:pointer;}
+.avatar-circle img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.avatar-edit-btn{position:absolute;bottom:0;left:0;width:30px;height:30px;background:var(--g800);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #fff;}
+.avatar-hint{font-size:12px;color:var(--ink3);}
+
+/* gallery */
+.gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.gal-thumb{aspect-ratio:1;border-radius:10px;overflow:hidden;position:relative;cursor:pointer;background:var(--g100);}
+.gal-thumb img{width:100%;height:100%;object-fit:cover;}
+.gal-thumb.placeholder{display:flex;align-items:center;justify-content:center;font-size:28px;}
+.gal-del{position:absolute;top:4px;left:4px;width:22px;height:22px;background:rgba(192,57,43,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;cursor:pointer;border:none;z-index:2;}
+.gal-add{aspect-ratio:1;border-radius:10px;border:2px dashed var(--g200);display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--g500);cursor:pointer;background:var(--g50);}
+.gal-add:active{background:var(--g100);}
+
+/* cover */
+.cover-wrap{border-radius:var(--r);overflow:hidden;height:140px;position:relative;margin-bottom:14px;cursor:pointer;background:linear-gradient(135deg,var(--g800),var(--g500));}
+.cover-wrap img{width:100%;height:100%;object-fit:cover;}
+.cover-edit{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.55);border:none;border-radius:8px;padding:5px 12px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;}
+.cover-placeholder{display:flex;align-items:center;justify-content:center;height:100%;font-size:52px;}
+
+/* zone */
+.zone-row{background:var(--g50);border:1.5px solid var(--g100);border-radius:var(--r);padding:13px 15px;margin-bottom:9px;display:flex;align-items:center;gap:12px;}
+.zone-icon{font-size:20px;flex-shrink:0;}
+.zone-info{flex:1;}
+.zone-name{font-size:14px;font-weight:700;}
+.zone-days{font-size:12px;color:var(--ink3);margin-top:3px;}
+.dchip{display:inline-block;background:var(--g100);color:var(--g800);border-radius:5px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:3px;}
+.dchip.pick{background:var(--g800);color:#fff;}
+.toggle{width:44px;height:26px;border-radius:13px;background:var(--g800);position:relative;cursor:pointer;flex-shrink:0;border:none;}
+.toggle::after{content:'';position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;}
+.toggle.off{background:var(--line);}
+.toggle.off::after{transform:translateX(-18px);}
+
+/* modal */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);}
+.mo.open{display:flex;}
+.md{background:var(--white);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:88dvh;overflow-y:auto;animation:up .28s ease;}
+@keyframes up{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.md-handle{width:40px;height:4px;background:var(--line);border-radius:2px;margin:13px auto 0;}
+.md-body{padding:18px 20px 40px;}
+.md-title{font-size:19px;font-weight:800;margin-bottom:16px;}
+.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.act-btn{padding:12px;border:1.5px solid var(--line);border-radius:11px;background:var(--g50);font-size:13px;font-weight:700;cursor:pointer;text-align:center;}
+.act-btn.green{background:var(--g100);color:var(--g800);border-color:var(--g200);}
+.act-btn.amber{background:var(--amber-bg);color:var(--amber);border-color:#f5d08a;}
+.act-btn.red{background:var(--red-bg);color:var(--red);border-color:#f5b8b3;}
+.act-btn.blue{background:var(--blue-bg);color:var(--blue);border-color:#bfdbfe;}
+
+/* hidden file input */
+#fileInput,#coverInput,#profileInput{display:none;}
+
+/* toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--g900);color:#fff;padding:10px 20px;border-radius:40px;font-size:14px;font-weight:600;opacity:0;transition:all .28s;z-index:999;pointer-events:none;white-space:nowrap;}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.empty{text-align:center;padding:32px 16px;color:var(--ink3);}
+.empty-icon{font-size:40px;margin-bottom:8px;}
+.empty-title{font-size:15px;font-weight:700;color:var(--ink2);margin-bottom:4px;}
+
+.back-btn{background:none;border:none;color:var(--ink2);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;margin-bottom:16px;padding:0;}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line);}
+.divider span{font-size:12px;color:var(--ink3);}
+
+@media(min-width:431px){body{background:#dde8df;padding:24px 0;}.app{border-radius:28px;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ AUTH ══ -->
+<div class="auth-wrap" id="authWrap">
+  <div class="auth-hero">
+    <div class="auth-logo">🌿</div>
+    <div class="auth-title">גנן חכם</div>
+    <div class="auth-sub">ניהול תורים ולקוחות בקלות</div>
+  </div>
+  <div class="auth-body">
+    <div class="field"><label class="flbl">אימייל</label><input class="inp" id="gEmail" type="email" placeholder="moshe@example.com"></div>
+    <div class="field"><label class="flbl">סיסמה</label><input class="inp" id="gPass" type="password" placeholder="••••••••"></div>
+    <button class="cta" onclick="loginGardener()" style="margin-bottom:12px;">כניסה →</button>
+    <div class="divider"><span>או</span></div>
+    <button class="cta sec" onclick="demoLogin()" style="margin-bottom:10px;">⚡ כניסה לדמו מלא</button>
+    <div style="text-align:center;font-size:13px;color:var(--ink3);">לדמו: תראה את כל הפיצ׳רים כולל עריכת תמונות</div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div class="main-wrap" id="mainWrap">
+
+  <div class="topbar">
+    <div class="topbar-row">
+      <div>
+        <div class="topbar-greeting">שלום,</div>
+        <div class="topbar-name" id="topName">טוען...</div>
+      </div>
+      <div class="t-avatar" id="topAvatar" onclick="goTab('profile')">🌿</div>
+    </div>
+    <div class="stats-row">
+      <div class="sc"><div class="sc-n" id="stToday">0</div><div class="sc-l">היום</div></div>
+      <div class="sc"><div class="sc-n" id="stWeek">0</div><div class="sc-l">השבוע</div></div>
+      <div class="sc"><div class="sc-n" id="stPending">0</div><div class="sc-l">ממתינים</div></div>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+    <!-- HOME -->
+    <div class="tab-pane show" id="tabHome" data-tab="home"></div>
+    <!-- CAL -->
+    <div class="tab-pane" id="tabCal" data-tab="cal">
+      <div class="card">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="calPrev()">›</button>
+          <div class="cal-month" id="calLbl"></div>
+          <button class="cal-nav-btn" onclick="calNext()">‹</button>
+        </div>
+        <div class="dhdr"><div class="dh">א</div><div class="dh">ב</div><div class="dh">ג</div><div class="dh">ד</div><div class="dh">ה</div><div class="dh">ו</div><div class="dh">ש</div></div>
+        <div class="cgrid" id="calGrid"></div>
+      </div>
+      <div id="calDay"></div>
+    </div>
+    <!-- PROFILE -->
+    <div class="tab-pane" id="tabProfile" data-tab="profile"></div>
+    <!-- ZONES -->
+    <div class="tab-pane" id="tabZones" data-tab="zones"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="nav-item act" id="nav-home" onclick="goTab('home')"><div class="nav-icon">🏠</div><span>בית</span></div>
+    <div class="nav-item" id="nav-cal" onclick="goTab('cal')"><div class="nav-icon">📅</div><span>יומן</span></div>
+    <div class="nav-item" id="nav-profile" onclick="goTab('profile')"><div class="nav-icon">👤</div><span>פרופיל</span></div>
+    <div class="nav-item" id="nav-zones" onclick="goTab('zones')"><div class="nav-icon">📍</div><span>אזורים</span></div>
+  </nav>
+</div>
+
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div class="mo" id="moAppt"><div class="md"><div class="md-handle"></div><div class="md-body" id="moApptBody"></div></div></div>
+<div class="mo" id="moZone">
+  <div class="md"><div class="md-handle"></div>
+    <div class="md-body">
+      <div class="md-title">אזור חדש</div>
+      <div class="field"><label class="flbl">שם האזור</label><input class="inp" id="znName" placeholder="צפון תל אביב"></div>
+      <div class="field">
+        <label class="flbl">ימי פינוי גזם</label>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:5px;font-size:14px;"><input type="checkbox" class="zday" value="0"> ראשון</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:14px;"><input type="checkbox" class="zday" value="1"> שני</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:14px;"><input type="checkbox" class="zday" value="2"> שלישי</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:14px;"><input type="checkbox" class="zday" value="3"> רביעי</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:14px;"><input type="checkbox" class="zday" value="4"> חמישי</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:14px;"><input type="checkbox" class="zday" value="5"> שישי</label>
+        </div>
+      </div>
+      <button class="cta" onclick="saveZone()" style="margin-bottom:10px;">💾 שמור אזור</button>
+      <button class="cta sec" onclick="closeMo('moZone')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- hidden file inputs -->
+<input type="file" id="fileInput" accept="image/*">
+<input type="file" id="coverInput" accept="image/*">
+<input type="file" id="profileInput" accept="image/*">
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+// ─── SUPABASE (optional real mode) ───
+// const sb = supabase.createClient('URL','KEY');
+
+// ─── DEMO DATA ───
+const todS = () => { const n=new Date(); return `${n.getFullYear()}-${p2(n.getMonth()+1)}-${p2(n.getDate())}`; };
+const p2 = n => String(n).padStart(2,'0');
+const fmtS = (y,m,d) => `${y}-${p2(m)}-${p2(d)}`;
+const tomorrow = () => { const n=new Date(); n.setDate(n.getDate()+1); return fmtS(n.getFullYear(),n.getMonth()+1,n.getDate()); };
+const next2 = () => { const n=new Date(); n.setDate(n.getDate()+2); return fmtS(n.getFullYear(),n.getMonth()+1,n.getDate()); };
+
+// ─── STATE ───
+let G = {
+  name:'משה לוי', phone:'050-1234567', city:'תל אביב',
+  bio:'גנן מקצועי עם 12 שנות ניסיון באזור המרכז.',
+  avatarSrc: null, coverSrc: null
+};
+let APPTS = [
+  {id:'1',date:todS(),time_slot:'08:00',status:'confirmed',work_type:'גיזום',   client_name:'דוד כהן',   client_phone:'050-1111111',client_addr:'הרצל 12 תל אביב',notes:''},
+  {id:'2',date:todS(),time_slot:'10:30',status:'pending',  work_type:'ניקיון',  client_name:'שרה לוי',   client_phone:'052-2222222',client_addr:'ביאליק 5 רמת גן',notes:''},
+  {id:'3',date:todS(),time_slot:'14:00',status:'confirmed',work_type:'שתילה',   client_name:'יוסי מזרחי',client_phone:'054-3333333',client_addr:'בן גוריון 88 ת״א',notes:'יש כלב'},
+  {id:'4',date:tomorrow(),time_slot:'09:00',status:'pending',work_type:'השקיה', client_name:'מרים אברהם',client_phone:'053-4444444',client_addr:'רוטשילד 20 ת״א',notes:''},
+  {id:'5',date:tomorrow(),time_slot:'13:00',status:'confirmed',work_type:'דישון',client_name:'אלי שמש',  client_phone:'058-5555555',client_addr:'דיזנגוף 50 ת״א',notes:''},
+  {id:'6',date:next2(),time_slot:'10:00',status:'confirmed',work_type:'גיזום',  client_name:'רחל כץ',   client_phone:'050-6666666',client_addr:'אלנבי 77 ת״א',notes:''},
+];
+let ZONES = [
+  {id:'z1',name:'צפון תל אביב',pickup_days:['0','3'],active:true},
+  {id:'z2',name:'רמת גן',       pickup_days:['1','4'],active:true},
+  {id:'z3',name:'גבעתיים',      pickup_days:['2','5'],active:false},
+];
+let GALLERY = [
+  {id:'g1',src:null,emoji:'🌳',label:'גיזום — הרצל'},
+  {id:'g2',src:null,emoji:'🌸',label:'שתילה — ביאליק'},
+  {id:'g3',src:null,emoji:'💧',label:'השקיה — רוטשילד'},
+  {id:'g4',src:null,emoji:'🌿',label:'ניקיון — דיזנגוף'},
+];
+let calY, calM, calSel;
+const MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const DAYS_HE=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const DAYS_SHORT=['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+
+// ─── AUTH ───
+window.addEventListener('load', () => {
+  if (localStorage.getItem('demo')) { enterApp(); return; }
+  document.getElementById('authWrap').style.display='flex';
+});
+
+function loginGardener() {
+  const e=document.getElementById('gEmail').value.trim();
+  const p=document.getElementById('gPass').value;
+  if(!e||!p){showToast('נא למלא פרטים');return;}
+  // real: sb.auth.signInWithPassword...
+  demoLogin();
+}
+
+function demoLogin() {
+  localStorage.setItem('demo','1');
+  document.getElementById('authWrap').style.display='none';
+  enterApp();
+}
+
+function enterApp() {
+  document.getElementById('mainWrap').classList.add('show');
+  updateTopBar();
+  updateStats();
+  renderHome();
+  initCal();
+}
+
+function logout() {
+  localStorage.removeItem('demo');
+  location.reload();
+}
+
+// ─── TOP BAR ───
+function updateTopBar() {
+  document.getElementById('topName').textContent = G.name + ' 🌿';
+  const av = document.getElementById('topAvatar');
+  if (G.avatarSrc) {
+    av.innerHTML = `<img src="${G.avatarSrc}" alt="avatar">`;
+  } else {
+    av.textContent = G.name[0] || '🌿';
+  }
+}
+
+function updateStats() {
+  const tod=todS();
+  const we=new Date(); we.setDate(we.getDate()+7);
+  const weS=fmtS(we.getFullYear(),we.getMonth()+1,we.getDate());
+  document.getElementById('stToday').textContent  =APPTS.filter(a=>a.date===tod&&a.status!=='cancelled').length;
+  document.getElementById('stWeek').textContent   =APPTS.filter(a=>a.date>=tod&&a.date<=weS&&a.status!=='cancelled').length;
+  document.getElementById('stPending').textContent=APPTS.filter(a=>a.status==='pending').length;
+}
+
+// ─── HOME ───
+function renderHome() {
+  const tod=todS();
+  const todA=APPTS.filter(a=>a.date===tod&&a.status!=='cancelled').sort((a,b)=>a.time_slot.localeCompare(b.time_slot));
+  const pend=APPTS.filter(a=>a.status==='pending');
+  const upco=APPTS.filter(a=>a.date>tod&&a.status!=='cancelled').slice(0,3);
+  const now=new Date().toTimeString().slice(0,5);
+  const nxt=todA.find(a=>a.time_slot>=now)||todA[0];
+  let h='';
+
+  if(pend.length){
+    h+=`<div class="alert-card" onclick="showPending()">
+      <div class="alert-icon">⏳</div>
+      <div class="alert-txt"><div class="alert-title">${pend.length} תורים ממתינים לאישור</div><div class="alert-sub">לחץ לצפייה ואישור מהיר</div></div>
+      <button class="alert-action">צפה</button>
+    </div>`;
+  }
+
+  if(nxt){
+    h+=`<div class="next-card">
+      <div class="next-lbl">הלקוח הבא</div>
+      <div class="next-name">${nxt.client_name}</div>
+      <div class="next-meta">${nxt.client_addr} · ${nxt.work_type}</div>
+      <div class="next-row">
+        <div class="next-time">${nxt.time_slot}</div>
+        <div class="next-btns">
+          <button class="next-btn" onclick="wa('${nxt.client_phone}')">📱 WA</button>
+          <button class="next-btn" onclick="showAppt('${nxt.id}')">פרטים</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  h+=`<div class="sec-lbl">היום — ${fmtDHe(tod)}</div>`;
+  if(!todA.length) h+=`<div class="empty"><div class="empty-icon">🌤️</div><div class="empty-title">אין תורים היום</div></div>`;
+  else todA.forEach(a=>{h+=acHTML(a,false);});
+
+  if(upco.length){
+    h+=`<div class="sec-lbl">קרוב</div>`;
+    upco.forEach(a=>{h+=acHTML(a,true);});
+  }
+
+  document.getElementById('tabHome').innerHTML=h;
+}
+
+function acHTML(a,showDate) {
+  const m={pending:['bp','ממתין'],confirmed:['bc','מאושר'],completed:['bd','הושלם'],cancelled:['bx','בוטל']};
+  const [cls,lbl]=m[a.status]||m.pending;
+  return `<div class="ac" onclick="showAppt('${a.id}')">
+    <div class="ac-time"><div class="t">${a.time_slot}</div></div>
+    <div class="ac-info">
+      <div class="ac-name">${a.client_name}</div>
+      <div class="ac-meta">${a.work_type}${showDate?' · '+fmtDHe(a.date):''}</div>
+    </div>
+    <span class="bdg ${cls}">${lbl}</span>
+  </div>`;
+}
+
+// ─── APPT DETAIL MODAL ───
+function showAppt(id) {
+  const a=APPTS.find(x=>x.id===id); if(!a) return;
+  const m={pending:'ממתין',confirmed:'מאושר',completed:'הושלם',cancelled:'בוטל'};
+  document.getElementById('moApptBody').innerHTML=`
+    <div class="md-title">${a.client_name}</div>
+    <div style="background:var(--g50);border-radius:12px;padding:12px;margin-bottom:16px;border:1px solid var(--g100);">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">${fmtDHe(a.date)} · ${a.time_slot}</div>
+      <div style="font-size:13px;color:var(--ink2);">📍 ${a.client_addr}</div>
+      <div style="font-size:13px;color:var(--ink2);">🔧 ${a.work_type}</div>
+      <div style="font-size:13px;color:var(--ink2);">📊 סטטוס: ${m[a.status]}</div>
+    </div>
+
+    <div class="field"><label class="flbl">הערות פנימיות שלך</label>
+      <textarea class="inp" id="apptNotesTa" placeholder="לדוג׳: צריך מכסחה גדולה, יש כלב...">${a.notes||''}</textarea>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <div class="flbl" style="margin-bottom:8px;">שנה סטטוס</div>
+      <div class="act-grid">
+        <button class="act-btn green" onclick="setStatus('${id}','confirmed')">✅ אשר</button>
+        <button class="act-btn" onclick="setStatus('${id}','completed')">🏁 הושלם</button>
+        <button class="act-btn amber" onclick="setStatus('${id}','pending')">⏳ ממתין</button>
+        <button class="act-btn red" onclick="setStatus('${id}','cancelled')">❌ בטל</button>
+      </div>
+    </div>
+    <div class="act-grid" style="margin-bottom:14px;">
+      <button class="act-btn blue" onclick="wa('${a.client_phone}')">📱 WhatsApp</button>
+      <button class="act-btn" onclick="window.open('tel:${a.client_phone}')">📞 חייג</button>
+    </div>
+    <button class="cta" onclick="saveNotes('${id}')" style="margin-bottom:10px;">💾 שמור הערות</button>
+    <button class="cta sec" onclick="closeMo('moAppt')">סגור</button>
+  `;
+  openMo('moAppt');
+}
+
+function setStatus(id,status) {
+  const a=APPTS.find(x=>x.id===id); if(!a) return;
+  a.status=status;
+  updateStats(); renderHome();
+  if(calSel) renderCalDay(calSel);
+  closeMo('moAppt');
+  showToast({confirmed:'אושר ✅',completed:'הושלם 🏁',cancelled:'בוטל ❌',pending:'חזר לממתין ⏳'}[status]);
+}
+
+function saveNotes(id) {
+  const a=APPTS.find(x=>x.id===id); if(!a) return;
+  a.notes=document.getElementById('apptNotesTa').value;
+  closeMo('moAppt'); showToast('הערות נשמרו ✅');
+}
+
+function showPending() {
+  const pend=APPTS.filter(a=>a.status==='pending');
+  document.getElementById('moApptBody').innerHTML=
+    `<div class="md-title">ממתינים לאישור</div>`+
+    pend.map(a=>acHTML(a,true)).join('')+
+    `<button class="cta sec" style="margin-top:12px;" onclick="closeMo('moAppt')">סגור</button>`;
+  openMo('moAppt');
+  // re-attach onclick after innerHTML set
+  document.querySelectorAll('#moApptBody .ac').forEach(el=>{
+    const id=el.getAttribute('onclick').match(/'(.+)'/)[1];
+    el.onclick=()=>showAppt(id);
+  });
+}
+
+// ─── CALENDAR ───
+function initCal() {
+  const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); calSel=todS();
+  renderCal(); renderCalDay(calSel);
+}
+
+function renderCal() {
+  document.getElementById('calLbl').textContent=MONTHS[calM]+' '+calY;
+  const tod=todS();
+  const first=new Date(calY,calM,1).getDay();
+  const days=new Date(calY,calM+1,0).getDate();
+  let h='';
+  for(let i=0;i<first;i++) h+='<div class="cd emp"></div>';
+  for(let d=1;d<=days;d++){
+    const ds=fmtS(calY,calM+1,d);
+    const has=APPTS.some(a=>a.date===ds&&a.status!=='cancelled');
+    const cls='cd'+(has?' has':'')+(ds===tod?' tod':'')+(ds===calSel?' sel':'');
+    h+=`<div class="${cls}" onclick="pickDay('${ds}')">${d}<div class="cdot"></div></div>`;
+  }
+  document.getElementById('calGrid').innerHTML=h;
+}
+
+function calPrev(){calM--;if(calM<0){calM=11;calY--;}renderCal();}
+function calNext(){calM++;if(calM>11){calM=0;calY++;}renderCal();}
+
+function pickDay(ds){
+  calSel=ds; renderCal(); renderCalDay(ds);
+}
+
+function renderCalDay(ds) {
+  const a=APPTS.filter(x=>x.date===ds&&x.status!=='cancelled').sort((a,b)=>a.time_slot.localeCompare(b.time_slot));
+  let h=`<div class="sec-lbl">${fmtDHe(ds)}</div>`;
+  if(!a.length) h+=`<div class="empty"><div class="empty-icon">📅</div><div class="empty-title">אין תורים</div></div>`;
+  else a.forEach(x=>{h+=acHTML(x,false);});
+  document.getElementById('calDay').innerHTML=h;
+}
+
+// ─── PROFILE ───
+function renderProfile() {
+  const av = G.avatarSrc
+    ? `<img src="${G.avatarSrc}" alt="avatar">`
+    : `<span style="font-size:44px;">${G.name[0]||'🌿'}</span>`;
+  const cover = G.coverSrc
+    ? `<img src="${G.coverSrc}" alt="cover">`
+    : `<div class="cover-placeholder">🌿</div>`;
+
+  document.getElementById('tabProfile').innerHTML=`
+    <!-- COVER -->
+    <div class="cover-wrap" onclick="pickCover()">
+      ${cover}
+      <button class="cover-edit" onclick="event.stopPropagation();pickCover()">✏️ שנה תמונת רקע</button>
+    </div>
+
+    <!-- AVATAR -->
+    <div class="avatar-wrap">
+      <div class="avatar-circle" onclick="pickProfilePic()">
+        ${av}
+        <div class="avatar-edit-btn">✏️</div>
+      </div>
+      <div class="avatar-hint">לחץ לשינוי תמונת פרופיל</div>
+    </div>
+
+    <!-- DETAILS CARD -->
+    <div class="card">
+      <div class="card-title">📋 פרטים כלליים</div>
+      <div class="field"><label class="flbl">שם מלא</label><input class="inp" id="pName" value="${G.name}"></div>
+      <div class="field"><label class="flbl">טלפון</label><input class="inp" id="pPhone" type="tel" value="${G.phone}"></div>
+      <div class="field"><label class="flbl">עיר</label><input class="inp" id="pCity" value="${G.city}"></div>
+      <div class="field"><label class="flbl">תיאור קצר</label><textarea class="inp" id="pBio">${G.bio}</textarea></div>
+      <button class="cta" onclick="saveProfile()">💾 שמור פרטים</button>
+    </div>
+
+    <!-- GALLERY CARD -->
+    <div class="card">
+      <div class="card-title">📸 גלריית עבודות</div>
+      <div class="gal-grid" id="galGrid">${renderGalleryThumbs()}</div>
+      <div style="font-size:12px;color:var(--ink3);">לחץ על + להוספת תמונה · לחץ ✕ למחיקה</div>
+    </div>
+
+    <!-- LOGOUT -->
+    <button class="cta red-btn" style="margin-top:8px;margin-bottom:24px;" onclick="logout()">יציאה מהחשבון</button>
+  `;
+}
+
+function renderGalleryThumbs() {
+  let h=GALLERY.map((g,i)=>{
+    const inner = g.src
+      ? `<img src="${g.src}" alt="${g.label}">`
+      : `<div class="placeholder" style="display:flex;align-items:center;justify-content:center;height:100%;font-size:28px;">${g.emoji}</div>`;
+    return `<div class="gal-thumb" onclick="showAppt" style="background:var(--g${g.src?'50':'100'});">
+      ${inner}
+      <button class="gal-del" onclick="event.stopPropagation();delGallery('${g.id}')">✕</button>
+    </div>`;
+  }).join('');
+  h+=`<div class="gal-add" onclick="pickGallery()">+</div>`;
+  return h;
+}
+
+function saveProfile() {
+  G.name  = document.getElementById('pName').value.trim()||G.name;
+  G.phone = document.getElementById('pPhone').value.trim()||G.phone;
+  G.city  = document.getElementById('pCity').value.trim()||G.city;
+  G.bio   = document.getElementById('pBio').value.trim()||G.bio;
+  updateTopBar(); updateStats();
+  showToast('✅ הפרטים נשמרו!');
+}
+
+// ─── IMAGE PICKERS ───
+function pickProfilePic() {
+  const inp=document.getElementById('profileInput');
+  inp.onchange=e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      G.avatarSrc=ev.target.result;
+      updateTopBar();
+      renderProfile();
+      showToast('✅ תמונת פרופיל עודכנה!');
+    };
+    r.readAsDataURL(f);
+  };
+  inp.click();
+}
+
+function pickCover() {
+  const inp=document.getElementById('coverInput');
+  inp.onchange=e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      G.coverSrc=ev.target.result;
+      renderProfile();
+      showToast('✅ תמונת רקע עודכנה!');
+    };
+    r.readAsDataURL(f);
+  };
+  inp.click();
+}
+
+function pickGallery() {
+  const inp=document.getElementById('fileInput');
+  inp.onchange=e=>{
+    const files=[...e.target.files];
+    files.forEach(f=>{
+      const r=new FileReader();
+      r.onload=ev=>{
+        GALLERY.push({id:'g'+Date.now()+Math.random(),src:ev.target.result,emoji:'📸',label:'עבודה חדשה'});
+        document.getElementById('galGrid').innerHTML=renderGalleryThumbs();
+      };
+      r.readAsDataURL(f);
+    });
+    showToast(`✅ ${files.length} תמונות נוספו!`);
+  };
+  inp.multiple=true;
+  inp.click();
+}
+
+function delGallery(id) {
+  GALLERY=GALLERY.filter(g=>g.id!==id);
+  document.getElementById('galGrid').innerHTML=renderGalleryThumbs();
+  showToast('🗑 תמונה נמחקה');
+}
+
+// ─── ZONES ───
+function renderZones() {
+  const muni=[
+    {city:'תל אביב — צפון', days:['ראשון','רביעי']},
+    {city:'תל אביב — דרום', days:['שני','חמישי']},
+    {city:'רמת גן', days:['שני','חמישי']},
+    {city:'גבעתיים', days:['שלישי','שישי']},
+    {city:'בני ברק', days:['ראשון','רביעי']},
+    {city:'פתח תקווה', days:['שלישי','שישי']},
+  ];
+
+  let h=`<div class="sec-lbl">האזורים שלך</div>`;
+  if(!ZONES.length){
+    h+=`<div class="empty"><div class="empty-icon">📍</div><div class="empty-title">אין אזורים עדיין</div></div>`;
+  } else {
+    ZONES.forEach(z=>{
+      const chips=(z.pickup_days||[]).map(d=>`<span class="dchip pick">${DAYS_SHORT[+d]}</span>`).join('');
+      h+=`<div class="zone-row">
+        <div class="zone-icon">📍</div>
+        <div class="zone-info">
+          <div class="zone-name">${z.name}</div>
+          <div class="zone-days">פינוי: ${chips||'לא הוגדר'}</div>
+        </div>
+        <button class="toggle ${z.active?'':'off'}" onclick="toggleZone('${z.id}')"></button>
+      </div>`;
+    });
+  }
+  h+=`<button class="cta" onclick="openMo('moZone')" style="margin-bottom:24px;">+ הוסף אזור</button>`;
+
+  h+=`<div class="sec-lbl">ימי פינוי גזם לפי עיריות</div>`;
+  h+=`<div class="card"><div style="display:flex;flex-direction:column;gap:8px;">`;
+  muni.forEach(m=>{
+    const chips=m.days.map(d=>`<span class="dchip pick">${d}</span>`).join('');
+    h+=`<div style="background:var(--g50);border-radius:10px;padding:11px;border:1px solid var(--g100);">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;">🏙️ ${m.city}</div>
+      <div style="font-size:12px;color:var(--ink2);">פינוי: ${chips}</div>
+    </div>`;
+  });
+  h+=`</div></div>`;
+
+  document.getElementById('tabZones').innerHTML=h;
+}
+
+function toggleZone(id) {
+  const z=ZONES.find(x=>x.id===id); if(!z) return;
+  z.active=!z.active;
+  renderZones();
+  showToast(z.active?'✅ אזור הופעל':'⏸ אזור הושבת');
+}
+
+function saveZone() {
+  const name=document.getElementById('znName').value.trim();
+  const days=[...document.querySelectorAll('.zday:checked')].map(c=>c.value);
+  if(!name){showToast('נא להזין שם');return;}
+  ZONES.push({id:'z'+Date.now(),name,pickup_days:days,active:true});
+  renderZones(); closeMo('moZone');
+  document.getElementById('znName').value='';
+  document.querySelectorAll('.zday').forEach(c=>c.checked=false);
+  showToast('✅ אזור נוסף');
+}
+
+// ─── NAV ───
+const TABS=['home','cal','profile','zones'];
+function goTab(tab) {
+  TABS.forEach(t=>{
+    document.getElementById('tab'+cap(t)).classList.toggle('show',t===tab);
+    document.getElementById('nav-'+t).classList.toggle('act',t===tab);
+  });
+  document.getElementById('content').scrollTop=0;
+  if(tab==='profile') renderProfile();
+  if(tab==='zones') renderZones();
+  if(tab==='cal') {initCal();}
+}
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+// ─── HELPERS ───
+function fmtDHe(s){
+  if(!s) return '';
+  const d=new Date(s+'T12:00:00');
+  return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} (${DAYS_HE[d.getDay()]})`;
+}
+function wa(p){const c=p.replace(/\D/g,'').replace(/^0/,'972');window.open(`https://wa.me/${c}`);}
+function openMo(id){document.getElementById(id).classList.add('open');}
+function closeMo(id){document.getElementById(id).classList.remove('open');}
+function showToast(msg){
+  const el=document.getElementById('toastEl');
+  el.textContent=msg;el.classList.add('on');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('on'),2800);
+}
+document.querySelectorAll('.mo').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o) o.classList.remove('open');});
+});
+</script>
+</body>
+</html>

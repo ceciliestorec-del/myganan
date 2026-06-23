@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a4a2e">
+<title>קביעת תור — משה לוי גינות</title>
+<style>
+:root {
+  --g900:#0f2e1c; --g800:#1a4a2e; --g700:#245e3a; --g500:#3a8a56;
+  --g200:#c8ebd4; --g100:#e8f5ee; --g50:#f4fbf6;
+  --sand:#fafaf7; --ink:#1a1a1a; --ink2:#555; --ink3:#aaa;
+  --line:#e8e8e4; --white:#fff;
+  --r:18px; --r-sm:12px;
+  --shadow:0 2px 16px rgba(15,46,28,.09);
+  --shadow-lg:0 8px 40px rgba(15,46,28,.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:var(--sand); color:var(--ink); direction:rtl;
+  display:flex; justify-content:center;
+}
+.shell{
+  width:100%; max-width:430px;
+  min-height:100dvh; background:var(--white);
+  display:flex; flex-direction:column;
+  box-shadow:var(--shadow-lg);
+}
+
+/* HERO */
+.hero{
+  background:linear-gradient(155deg,var(--g900) 0%,var(--g700) 100%);
+  padding:36px 24px 60px; position:relative; overflow:hidden;
+  flex-shrink:0;
+}
+.hero::after{
+  content:''; position:absolute;
+  bottom:-24px; left:0; right:0; height:48px;
+  background:var(--white); border-radius:24px 24px 0 0;
+}
+.hero-bg{
+  position:absolute; top:-10px; left:-10px;
+  font-size:180px; opacity:.05; transform:rotate(-15deg);
+  pointer-events:none; line-height:1;
+}
+.hero-tag{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18);
+  border-radius:20px; padding:5px 14px;
+  font-size:12px; color:rgba(255,255,255,.85); margin-bottom:16px;
+}
+.hero-name{font-size:28px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:6px;letter-spacing:-.4px;}
+.hero-desc{font-size:14px;color:rgba(255,255,255,.68);line-height:1.5;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;}
+.hero-pill{
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15);
+  border-radius:20px; padding:5px 12px; font-size:12px; color:rgba(255,255,255,.8);
+}
+
+/* BODY */
+.body{flex:1; padding:20px 20px 40px; overflow-y:auto;}
+
+/* STEPS */
+.step-bar{
+  display:flex; align-items:center; justify-content:center;
+  gap:0; margin-bottom:28px;
+}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+.step-circle{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;
+  background:var(--line);color:var(--ink3);
+  transition:all .25s;
+}
+.step-circle.act{background:var(--g800);color:#fff;box-shadow:0 0 0 4px var(--g100);}
+.step-circle.don{background:var(--g500);color:#fff;}
+.step-lbl{font-size:10px;color:var(--ink3);font-weight:600;}
+.step-lbl.act{color:var(--g800);}
+.step-line{flex:1;height:2px;background:var(--line);margin-top:-21px;max-width:28px;transition:background .25s;}
+.step-line.don{background:var(--g500);}
+
+/* HEADINGS */
+.sec-h{font-size:21px;font-weight:800;color:var(--ink);margin-bottom:5px;letter-spacing:-.3px;}
+.sec-s{font-size:14px;color:var(--ink2);margin-bottom:22px;line-height:1.5;}
+
+/* SERVICE CARDS */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.svc-card{
+  background:var(--g50); border:2px solid var(--line);
+  border-radius:var(--r); padding:18px 14px;
+  cursor:pointer; text-align:center;
+  transition:all .18s; position:relative;
+}
+.svc-card:active{transform:scale(.96);}
+.svc-card.sel{background:var(--g800);border-color:var(--g800);}
+.svc-icon{font-size:30px;margin-bottom:9px;}
+.svc-name{font-size:14px;font-weight:700;color:var(--ink);}
+.svc-card.sel .svc-name{color:#fff;}
+.svc-dur{font-size:11px;color:var(--ink3);margin-top:3px;}
+.svc-card.sel .svc-dur{color:rgba(255,255,255,.65);}
+.svc-check{
+  position:absolute;top:10px;left:10px;
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(255,255,255,.2);
+  display:none;align-items:center;justify-content:center;
+  font-size:11px;color:#fff;
+}
+.svc-card.sel .svc-check{display:flex;}
+
+/* CALENDAR */
+.cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.cal-nav-btn{
+  width:38px;height:38px;border:none;
+  background:var(--g100);border-radius:10px;
+  font-size:18px;cursor:pointer;color:var(--g800);
+  display:flex;align-items:center;justify-content:center;
+}
+.cal-nav-btn:active{background:var(--g200);}
+.cal-month{font-size:17px;font-weight:800;color:var(--ink);}
+.day-hdrs{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
+.day-hdr{text-align:center;font-size:11px;font-weight:700;color:var(--ink3);padding:3px 0;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-d{
+  aspect-ratio:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  border-radius:10px;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--ink);
+  transition:all .15s;border:2px solid transparent;
+  position:relative;
+}
+.cal-d.emp{pointer-events:none;}
+.cal-d.dis{color:var(--ink3);pointer-events:none;opacity:.3;}
+.cal-d.ope{background:var(--g50);border-color:var(--g200);}
+.cal-d.ope:active{background:var(--g100);}
+.cal-d.tod.ope{background:var(--g100);}
+.cal-d.sel{background:var(--g800)!important;color:#fff!important;border-color:var(--g800);box-shadow:var(--shadow);}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--g500);position:absolute;bottom:3px;display:none;}
+.cal-d.ope .cdot{display:block;}
+.cal-d.sel .cdot{background:rgba(255,255,255,.45);}
+
+/* TIME */
+.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.time-btn{
+  padding:14px 4px; border:2px solid var(--line);
+  border-radius:var(--r-sm); background:var(--g50);
+  font-size:16px;font-weight:700;color:var(--ink);
+  cursor:pointer;text-align:center;transition:all .15s;
+}
+.time-btn:active{transform:scale(.95);}
+.time-btn.sel{background:var(--g800);border-color:var(--g800);color:#fff;box-shadow:var(--shadow);}
+.time-btn.tak{opacity:.3;pointer-events:none;text-decoration:line-through;}
+
+/* FIELDS */
+.field{margin-bottom:15px;}
+.field-lbl{display:block;font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:6px;}
+.inp{
+  width:100%;border:2px solid var(--line);border-radius:var(--r-sm);
+  padding:14px 15px;font-size:17px;color:var(--ink);
+  background:var(--g50);direction:rtl;outline:none;
+  transition:border-color .2s,background .2s;-webkit-appearance:none;
+}
+.inp:focus{border-color:var(--g800);background:var(--white);}
+.inp::placeholder{color:var(--ink3);}
+
+/* SUMMARY */
+.summary{
+  background:var(--g100);border-radius:var(--r);
+  border:1.5px solid var(--g200);padding:16px;margin-bottom:18px;
+}
+.sum-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:6px 0;border-bottom:1px solid var(--g200);
+}
+.sum-row:last-child{border-bottom:none;}
+.sum-k{font-size:13px;color:var(--ink2);}
+.sum-v{font-size:14px;font-weight:700;color:var(--g800);text-align:left;max-width:58%;}
+
+/* CTA */
+.cta{
+  width:100%;padding:17px;background:var(--g800);color:#fff;
+  border:none;border-radius:var(--r);font-size:17px;font-weight:800;
+  cursor:pointer;box-shadow:0 4px 18px rgba(26,74,46,.3);
+  transition:opacity .2s,transform .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  letter-spacing:-.2px;
+}
+.cta:active{opacity:.88;transform:scale(.98);}
+.cta:disabled{opacity:.35;pointer-events:none;}
+.cta.sec{background:var(--g100);color:var(--g800);box-shadow:none;}
+
+.btn-back{
+  background:none;border:none;color:var(--ink2);
+  font-size:14px;font-weight:600;cursor:pointer;
+  padding:0 0 14px 0;display:flex;align-items:center;gap:4px;
+}
+
+/* SUCCESS */
+.success{
+  display:flex;flex-direction:column;align-items:center;
+  padding:40px 20px;text-align:center;
+}
+.ok-ring{
+  width:96px;height:96px;border-radius:50%;
+  background:var(--g100);border:3px solid var(--g200);
+  display:flex;align-items:center;justify-content:center;
+  font-size:50px;margin-bottom:22px;
+  animation:pop .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.ok-title{font-size:25px;font-weight:800;color:var(--g800);margin-bottom:8px;}
+.ok-sub{font-size:15px;color:var(--ink2);line-height:1.6;margin-bottom:24px;}
+.ok-box{
+  background:var(--g100);border-radius:var(--r);
+  border:1.5px solid var(--g200);padding:16px;
+  width:100%;margin-bottom:24px;text-align:right;
+}
+.ok-row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;}
+.ok-k{color:var(--ink2);}
+.ok-v{font-weight:700;color:var(--g800);}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--g900);color:#fff;padding:11px 20px;border-radius:40px;
+  font-size:14px;font-weight:600;opacity:0;transition:all .3s;
+  z-index:999;white-space:nowrap;pointer-events:none;
+  box-shadow:var(--shadow-lg);
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* SCREEN */
+.scr{display:none;flex-direction:column;}
+.scr.on{display:flex;}
+
+/* DIVIDER */
+.div{height:1px;background:var(--line);margin:20px 0;}
+
+@media(min-width:431px){
+  body{background:#dde8df;padding:28px 0;align-items:flex-start;}
+  .shell{border-radius:28px;min-height:auto;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg" aria-hidden="true">🌿</div>
+    <div class="hero-tag">⭐ 4.9 · 450+ לקוחות מרוצים</div>
+    <div class="hero-name">משה לוי<br>גינות ונוף</div>
+    <div class="hero-desc">12 שנות ניסיון · אזור המרכז</div>
+    <div class="hero-pills">
+      <span class="hero-pill">✂️ גיזום</span>
+      <span class="hero-pill">🌱 שתילה</span>
+      <span class="hero-pill">💧 השקיה</span>
+      <span class="hero-pill">🧹 ניקיון</span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- STEP BAR -->
+    <div class="step-bar" id="stepBar">
+      <div class="step-item">
+        <div class="step-circle act" id="sc1">1</div>
+        <div class="step-lbl act" id="sl1">שירות</div>
+      </div>
+      <div class="step-line" id="ln1"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc2">2</div>
+        <div class="step-lbl" id="sl2">תאריך</div>
+      </div>
+      <div class="step-line" id="ln2"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc3">3</div>
+        <div class="step-lbl" id="sl3">פרטים</div>
+      </div>
+      <div class="step-line" id="ln3"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc4">4</div>
+        <div class="step-lbl" id="sl4">אישור</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: SERVICE -->
+    <div class="scr on" id="s1">
+      <div class="sec-h">מה תרצה שנעשה?</div>
+      <div class="sec-s">בחר שירות אחד להתחיל</div>
+      <div class="svc-grid">
+        <div class="svc-card" onclick="pickSvc(this,'גיזום','✂️','~2 שעות')">
+          <div class="svc-check">✓</div>
+          <div class="svc-icon">✂️</div>
+          <div class="svc-name">גיזום</div>
+          <div class="svc-dur">~2 שעות</div>
+        </div>
+        <div class="svc-card" onclick="pickSvc(this,'ניקיון כללי','🧹','~3 שעות')">
+          <div class="svc-check">✓</div>
+          <div class="svc-icon">🧹</div>
+          <div class="svc-name">ניקיון כללי</div>
+          <div class="svc-dur">~3 שעות</div>
+        </div>
+        <div class="svc-card" onclick="pickSvc(this,'שתילה','🌱','~2 שעות')">
+          <div class="svc-check">✓</div>
+          <div class="svc-icon">🌱</div>
+          <div class="svc-name">שתילה</div>
+          <div class="svc-dur">~2 שעות</div>
+        </div>
+        <div class="svc-card" onclick="pickSvc(this,'מערכת השקיה','💧','~4 שעות')">
+          <div class="svc-check">✓</div>
+          <div class="svc-icon">💧</div>
+          <div class="svc-name">מערכת השקיה</div>
+          <div class="svc-dur">~4 שעות</div>
+        </div>
+        <div class="svc-card" onclick="pickSvc(this,'דישון','🌿','~1 שעה')">
+          <div class="svc-check">✓</div>
+          <div class="svc-icon">🌿</div>
+          <div class="svc-name">דישון</div>
+          <div class="svc-dur">~1 שעה</div>
+        </div>
+        <div class="svc-card" onclick="pickSvc(this,'טיפול מלא','⭐','יום שלם')">
+          <div class="svc-check">✓</div>
+          <div class="svc-icon">⭐</div>
+          <div class="svc-name">טיפול מלא</div>
+          <div class="svc-dur">יום שלם</div>
+        </div>
+      </div>
+      <button class="cta" id="s1Cta" disabled onclick="go(2)" style="margin-top:10px;">בחר תאריך →</button>
+    </div>
+
+    <!-- STEP 2: DATE + TIME -->
+    <div class="scr" id="s2">
+      <button class="btn-back" onclick="go(1)">← חזור</button>
+      <div class="sec-h">מתי נגיע?</div>
+      <div class="sec-s">ימים פתוחים מסומנים</div>
+
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="prevM()">›</button>
+        <div class="cal-month" id="mLabel"></div>
+        <button class="cal-nav-btn" onclick="nextM()">‹</button>
+      </div>
+      <div class="day-hdrs">
+        <div class="day-hdr">א</div><div class="day-hdr">ב</div><div class="day-hdr">ג</div>
+        <div class="day-hdr">ד</div><div class="day-hdr">ה</div><div class="day-hdr">ו</div>
+        <div class="day-hdr">ש</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+
+      <div id="timeSec" style="display:none;margin-top:22px;">
+        <div class="div" style="margin-top:0;"></div>
+        <div class="sec-h" style="font-size:17px;">בחר שעה</div>
+        <div style="font-size:13px;color:var(--ink2);margin-bottom:14px;" id="dateLabel"></div>
+        <div class="time-grid" id="timeGrid"></div>
+      </div>
+
+      <button class="cta" style="margin-top:20px;" id="s2Cta" disabled onclick="go(3)">המשך →</button>
+    </div>
+
+    <!-- STEP 3: PERSONAL DETAILS -->
+    <div class="scr" id="s3">
+      <button class="btn-back" onclick="go(2)">← חזור</button>
+      <div class="sec-h">הפרטים שלך</div>
+      <div class="sec-s">לא צריך להירשם — רק שם וטלפון</div>
+      <div class="field">
+        <label class="field-lbl">שם מלא</label>
+        <input class="inp" id="fName" type="text" placeholder="ישראל ישראלי" autocomplete="name">
+      </div>
+      <div class="field">
+        <label class="field-lbl">טלפון</label>
+        <input class="inp" id="fPhone" type="tel" placeholder="050-0000000" autocomplete="tel">
+      </div>
+      <div class="field">
+        <label class="field-lbl">כתובת הגינה</label>
+        <input class="inp" id="fAddr" type="text" placeholder="רחוב, מספר, עיר" autocomplete="street-address">
+      </div>
+      <div class="field">
+        <label class="field-lbl">הערות (אופציונלי)</label>
+        <textarea class="inp" id="fNotes" placeholder="מה חשוב שנדע? כלב בחצר, שער נעול..." style="resize:none;min-height:80px;"></textarea>
+      </div>
+      <button class="cta" onclick="go(4)">לאישור התור →</button>
+    </div>
+
+    <!-- STEP 4: CONFIRM -->
+    <div class="scr" id="s4">
+      <button class="btn-back" onclick="go(3)">← חזור</button>
+      <div class="sec-h">הכל נכון?</div>
+      <div class="sec-s">בדוק את הפרטים ואשר</div>
+      <div class="summary">
+        <div class="sum-row"><span class="sum-k">שירות</span><span class="sum-v" id="sumSvc">—</span></div>
+        <div class="sum-row"><span class="sum-k">תאריך</span><span class="sum-v" id="sumDate">—</span></div>
+        <div class="sum-row"><span class="sum-k">שעה</span><span class="sum-v" id="sumTime">—</span></div>
+        <div class="sum-row"><span class="sum-k">שם</span><span class="sum-v" id="sumName">—</span></div>
+        <div class="sum-row"><span class="sum-k">טלפון</span><span class="sum-v" id="sumPhone">—</span></div>
+        <div class="sum-row"><span class="sum-k">כתובת</span><span class="sum-v" id="sumAddr">—</span></div>
+      </div>
+      <button class="cta" onclick="submit()">✅ אשר וקבע תור</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="scr" id="s5">
+      <div class="success">
+        <div class="ok-ring">🎉</div>
+        <div class="ok-title">התור נקבע!</div>
+        <div class="ok-sub">תודה! הגנן יאשר איתך בוואצאפ בקרוב.</div>
+        <div class="ok-box">
+          <div class="ok-row"><span class="ok-k">שירות</span><span class="ok-v" id="okSvc"></span></div>
+          <div class="ok-row"><span class="ok-k">תאריך</span><span class="ok-v" id="okDate"></span></div>
+          <div class="ok-row"><span class="ok-k">שעה</span><span class="ok-v" id="okTime"></span></div>
+        </div>
+        <button class="cta sec" onclick="reset()">קבע תור נוסף</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const S = { svc:'', svcIcon:'', date:null, time:null, cy:0, cm:0 };
+const MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const DAYS_HE = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const OPEN_DAYS = [0,1,2,3,4]; // א-ה פתוח, ו-ש סגור
+const TIMES = ['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00'];
+const BOOKED_DEMO = { '2025-07-08':['09:00','10:00'], '2025-07-09':['08:00','14:00'] };
+
+function init() {
+  const n = new Date(); S.cy = n.getFullYear(); S.cm = n.getMonth();
+  renderCal();
+}
+
+// ── GO TO STEP ──
+function go(n) {
+  if (n === 3) {
+    const nm = document.getElementById('fName').value;
+    const ph = document.getElementById('fPhone').value;
+    const ad = document.getElementById('fAddr').value;
+    // just navigate, validate on submit
+  }
+  if (n === 4) {
+    const nm = document.getElementById('fName').value.trim();
+    const ph = document.getElementById('fPhone').value.trim();
+    const ad = document.getElementById('fAddr').value.trim();
+    if (!nm) { toast('נא להזין שם מלא'); return; }
+    if (ph.length < 9) { toast('נא להזין טלפון תקין'); return; }
+    if (!ad) { toast('נא להזין כתובת הגינה'); return; }
+    document.getElementById('sumSvc').textContent  = S.svc;
+    document.getElementById('sumDate').textContent = fmtD(S.date);
+    document.getElementById('sumTime').textContent = S.time;
+    document.getElementById('sumName').textContent = nm;
+    document.getElementById('sumPhone').textContent = ph;
+    document.getElementById('sumAddr').textContent = ad;
+  }
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  document.getElementById('s' + n).classList.add('on');
+  updateBar(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateBar(n) {
+  for (let i = 1; i <= 4; i++) {
+    const c = document.getElementById('sc'+i);
+    const l = document.getElementById('sl'+i);
+    if (i < n) { c.className='step-circle don'; c.textContent='✓'; }
+    else if (i === n) { c.className='step-circle act'; c.textContent=i; }
+    else { c.className='step-circle'; c.textContent=i; }
+    l.className = 'step-lbl' + (i===n?' act':'');
+  }
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('ln'+i).className = 'step-line'+(i<n?' don':'');
+  }
+  if (n === 5) document.getElementById('stepBar').style.display = 'none';
+}
+
+// ── SERVICE ──
+function pickSvc(el, name, icon, dur) {
+  document.querySelectorAll('.svc-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  S.svc = name; S.svcIcon = icon;
+  document.getElementById('s1Cta').disabled = false;
+}
+
+// ── CALENDAR ──
+function renderCal() {
+  document.getElementById('mLabel').textContent = MONTHS[S.cm] + ' ' + S.cy;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const first = new Date(S.cy, S.cm, 1).getDay();
+  const days  = new Date(S.cy, S.cm+1, 0).getDate();
+  let h = '';
+  for (let i = 0; i < first; i++) h += '<div class="cal-d emp"></div>';
+  for (let d = 1; d <= days; d++) {
+    const dt  = new Date(S.cy, S.cm, d);
+    const dow = dt.getDay();
+    const ds  = fmt(S.cy, S.cm+1, d);
+    const past = dt < today;
+    const open = !past && OPEN_DAYS.includes(dow);
+    const sel  = S.date === ds;
+    const tod  = dt.getTime() === today.getTime();
+    let cls = 'cal-d';
+    if (past || !OPEN_DAYS.includes(dow)) cls += ' dis';
+    else cls += ' ope';
+    if (tod && open) cls += ' tod';
+    if (sel) cls += ' sel';
+    h += `<div class="${cls}" onclick="pickDate('${ds}')">
+      ${d}<div class="cdot"></div>
+    </div>`;
+  }
+  document.getElementById('calGrid').innerHTML = h;
+}
+
+function prevM() { S.cm--; if(S.cm<0){S.cm=11;S.cy--;} renderCal(); }
+function nextM() { S.cm++; if(S.cm>11){S.cm=0;S.cy++;} renderCal(); }
+
+function pickDate(ds) {
+  S.date = ds; S.time = null;
+  renderCal();
+  const sec = document.getElementById('timeSec');
+  sec.style.display = 'block';
+  const d = new Date(ds+'T12:00:00');
+  document.getElementById('dateLabel').textContent = fmtD(ds);
+  const bk = BOOKED_DEMO[ds] || [];
+  document.getElementById('timeGrid').innerHTML = TIMES.map(t =>
+    `<div class="time-btn ${bk.includes(t)?'tak':''}" onclick="pickTime('${t}',this)">${t}</div>`
+  ).join('');
+  document.getElementById('s2Cta').disabled = true;
+  sec.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function pickTime(t, el) {
+  S.time = t;
+  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('s2Cta').disabled = false;
+}
+
+// ── SUBMIT ──
+function submit() {
+  document.getElementById('okSvc').textContent  = S.svc;
+  document.getElementById('okDate').textContent = fmtD(S.date);
+  document.getElementById('okTime').textContent = S.time;
+  go(5);
+}
+
+function reset() {
+  S.svc='';S.date=null;S.time=null;
+  document.querySelectorAll('.svc-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('fName').value='';
+  document.getElementById('fPhone').value='';
+  document.getElementById('fAddr').value='';
+  document.getElementById('fNotes').value='';
+  document.getElementById('s1Cta').disabled=true;
+  document.getElementById('timeSec').style.display='none';
+  document.getElementById('stepBar').style.display='flex';
+  go(1);
+}
+
+// ── HELPERS ──
+function fmt(y,m,d){return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
+function fmtD(s){
+  if(!s) return '';
+  const d=new Date(s+'T12:00:00');
+  return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} (${DAYS_HE[d.getDay()]})`;
+}
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'),2800);
+}
+
+init();
+</script>
+</body>
+</html>
