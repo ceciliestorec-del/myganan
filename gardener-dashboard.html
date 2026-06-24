@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a4a2e">
-<title>גנן חכם — דשבורד</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>גנן בזמן — דשבורד</title>
 <style>
 :root{
   --g900:#0f2e1c;--g800:#1a4a2e;--g700:#245e3a;--g500:#3a8a56;
@@ -20,7 +21,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--sand);color:var(--ink);direction:rtl;display:flex;justify-content:center;}
+body{font-family:'Rubik',sans-serif;background:var(--sand);color:var(--ink);direction:rtl;display:flex;justify-content:center;}
 .app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;background:var(--white);box-shadow:var(--sh-lg);position:relative;}
 
 /* ── AUTH ── */
@@ -196,8 +197,20 @@ textarea.inp{resize:none;min-height:80px;}
 <!-- ══ AUTH ══ -->
 <div class="auth-wrap" id="authWrap">
   <div class="auth-hero">
-    <div class="auth-logo">🌿</div>
-    <div class="auth-title">גנן חכם</div>
+    <div class="auth-logo" style="color:#e8f5ee;"><svg width="52" height="52" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
+  <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="5"/>
+  <line x1="50" y1="8" x2="50" y2="18" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="82" x2="50" y2="92" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <line x1="8" y1="50" x2="18" y2="50" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <line x1="82" y1="50" x2="92" y2="50" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="50" y2="24" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="66" y2="50" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="4" fill="currentColor"/>
+  <line x1="50" y1="94" x2="50" y2="108" stroke="#a8d5b5" stroke-width="4" stroke-linecap="round"/>
+  <path d="M50 104 Q34 96 33 80 Q48 84 50 100Z" fill="#a8d5b5"/>
+  <path d="M50 100 Q66 92 67 76 Q52 80 50 96Z" fill="#c8ebd4"/>
+</svg></div>
+    <div class="auth-title">גנן בזמן</div>
     <div class="auth-sub">ניהול תורים ולקוחות בקלות</div>
   </div>
   <div class="auth-body">
@@ -289,6 +302,94 @@ textarea.inp{resize:none;min-height:80px;}
 <input type="file" id="coverInput" accept="image/*">
 <input type="file" id="profileInput" accept="image/*">
 
+
+<!-- UPGRADE MODAL -->
+<div class="mo" id="moUpgrade">
+  <div class="md">
+    <div class="md-handle"></div>
+    <div class="md-body">
+      
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:40px;margin-bottom:8px;">⭐</div>
+        <div style="font-size:22px;font-weight:800;color:#1a4a2e;">תוכנית פרימיום</div>
+        <div style="font-size:14px;color:#555;margin-top:4px;">הכל כלול — ללא הגבלה</div>
+      </div>
+
+      <!-- Comparison -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+        
+        <!-- Basic -->
+        <div style="background:#f4fbf6;border:1.5px solid #e8f5ee;border-radius:14px;padding:14px;">
+          <div style="font-size:13px;font-weight:800;color:#1a4a2e;margin-bottom:10px;">בסיסי</div>
+          <div style="font-size:24px;font-weight:900;color:#1a4a2e;margin-bottom:4px;">250 ₪</div>
+          <div style="font-size:11px;color:#aaa;margin-bottom:12px;">לחודש</div>
+          <div style="font-size:12px;color:#555;line-height:1.9;">
+            ✅ דף פרופיל<br>
+            ✅ ניהול תורים<br>
+            ✅ ניהול לקוחות<br>
+            ❌ WhatsApp<br>
+            ❌ תזכורות<br>
+            ❌ OTP אימות
+          </div>
+        </div>
+
+        <!-- Premium -->
+        <div style="background:#1a4a2e;border-radius:14px;padding:14px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#f5a623;color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:0 0 8px 8px;white-space:nowrap;">מומלץ ⭐</div>
+          <div style="font-size:13px;font-weight:800;color:rgba(255,255,255,.7);margin-bottom:10px;margin-top:8px;">פרימיום</div>
+          <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:4px;">350 ₪</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:12px;">לחודש</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.9;">
+            ✅ דף פרופיל<br>
+            ✅ ניהול תורים<br>
+            ✅ ניהול לקוחות<br>
+            ✅ WhatsApp<br>
+            ✅ תזכורות אוטו׳<br>
+            ✅ OTP אימות
+          </div>
+        </div>
+      </div>
+
+      <!-- WhatsApp features detail -->
+      <div style="background:#e8f5ee;border-radius:14px;padding:14px;margin-bottom:20px;border:1.5px solid #c8ebd4;">
+        <div style="font-size:14px;font-weight:800;color:#1a4a2e;margin-bottom:10px;">📱 מה כולל הפרימיום?</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="font-size:18px;flex-shrink:0;">🔐</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1a4a2e;">אימות OTP בוואצאפ</div>
+              <div style="font-size:12px;color:#555;">לקוח מקבל קוד ב-WhatsApp לפני אישור תור</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="font-size:18px;flex-shrink:0;">⏰</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1a4a2e;">תזכורת יום לפני</div>
+              <div style="font-size:12px;color:#555;">הודעה אוטומטית ללקוח 24 שעות לפני התור</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="font-size:18px;flex-shrink:0;">🔁</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1a4a2e;">תזכורת חודשית</div>
+              <div style="font-size:12px;color:#555;">SMS אוטומטי ללקוחות לא פעילים</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button onclick="contactForUpgrade()" style="width:100%;padding:16px;background:#1a4a2e;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px;">
+        📱 צור קשר לשדרוג
+      </button>
+      <button onclick="closeMo('moUpgrade')" style="width:100%;padding:14px;background:#f4fbf6;color:#1a4a2e;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;">
+        אולי אחר כך
+      </button>
+
+    </div>
+  </div>
+</div>
 <div class="toast" id="toastEl"></div>
 
 <script>
@@ -587,6 +688,26 @@ function renderProfile() {
       <div style="font-size:12px;color:var(--ink3);">לחץ על + להוספת תמונה · לחץ ✕ למחיקה</div>
     </div>
 
+    
+      <!-- UPGRADE CARD -->
+      <div style="background:linear-gradient(135deg,#1a4a2e,#3a8a56);border-radius:18px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-20px;left:-20px;font-size:120px;opacity:.06;pointer-events:none;">⭐</div>
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:2px;margin-bottom:8px;">התוכנית שלך</div>
+        <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;">בסיסי</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:16px;">ניהול תורים ולקוחות</div>
+        <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:12px;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">✅ כלול בתוכנית שלך</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.8;">
+            🌿 דף פרופיל אישי<br>
+            📅 ניהול תורים ויומן<br>
+            👥 ניהול לקוחות<br>
+            📍 ניהול אזורים
+          </div>
+        </div>
+        <button onclick="showUpgradeModal()" style="width:100%;padding:14px;background:#fff;color:#1a4a2e;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">
+          ⭐ שדרג לפרימיום
+        </button>
+      </div>
     <!-- LOGOUT -->
     <button class="cta red-btn" style="margin-top:8px;margin-bottom:24px;" onclick="logout()">יציאה מהחשבון</button>
   `;
@@ -747,6 +868,15 @@ function goTab(tab) {
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 
 // ─── HELPERS ───
+
+function showUpgradeModal() { openMo('moUpgrade'); }
+function contactForUpgrade() {
+  const msg = encodeURIComponent('שלום! אני רוצה לשדרג לתוכנית פרימיום של גנן בזמן 🌿');
+  window.open('https://wa.me/972XXXXXXXXX?text=' + msg);
+  closeMo('moUpgrade');
+  showToast('מעביר לוואצאפ...');
+}
+
 function fmtDHe(s){
   if(!s) return '';
   const d=new Date(s+'T12:00:00');
