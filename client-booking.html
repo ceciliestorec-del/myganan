@@ -562,6 +562,158 @@ function reset() {
 }
 
 // ── HELPERS ──
+
+// ─── TWILIO WHATSAPP ───
+const TWILIO_SID   = 'AC1826426bdbb46e82864461b860068b22';
+const TWILIO_TOKEN = '43b0748c85bd46ee6fcd052f76634549';
+const TWILIO_WA    = 'whatsapp:+14155238886';
+
+async function sendWhatsApp(to, message) {
+  const phone = to.replace(/\D/g,'').replace(/^0/,'972');
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`;
+  const body = new URLSearchParams({
+    From: TWILIO_WA,
+    To: `whatsapp:+${phone}`,
+    Body: message,
+  });
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + btoa(`${TWILIO_SID}:${TWILIO_TOKEN}`),
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body,
+    });
+    const data = await res.json();
+    return data;
+  } catch(e) {
+    console.error('WhatsApp error:', e);
+  }
+}
+
+// Generate 6-digit OTP
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+let currentOTP = null;
+let otpPhone = null;
+let pendingBooking = null;
+
+
+async function submitBookingWithOTP() {
+  if (!B.workType) { toast('נא לבחור סוג עבודה'); return; }
+  
+  const phone = document.getElementById('fPhone').value.trim();
+  const name  = document.getElementById('fName').value.trim();
+  
+  // Generate OTP
+  currentOTP = generateOTP();
+  otpPhone   = phone;
+  pendingBooking = true;
+
+  // Send OTP via WhatsApp
+  toast('שולח קוד אימות...');
+  const msg = `שלום ${name}! 🌿\n\nקוד האימות שלך לקביעת תור הוא:\n*${currentOTP}*\n\nהקוד תקף ל-10 דקות.`;
+  await sendWhatsApp(phone, msg);
+
+  // Show OTP screen
+  document.getElementById('bookStep3').style.display = 'none';
+  document.getElementById('bookOTP').style.display   = 'block';
+  document.getElementById('otpPhoneDisplay').textContent = phone;
+  toast('📱 קוד נשלח ב-WhatsApp!');
+}
+
+function otpMove(el, idx) {
+  el.value = el.value.slice(-1);
+  if (el.value.length === 1) {
+    const inputs = document.querySelectorAll('.otp-inp');
+    if (idx < 5) inputs[idx+1].focus();
+    else verifyOTPAndBook();
+  }
+}
+
+async function verifyOTPAndBook() {
+  const inputs = [...document.querySelectorAll('.otp-inp')];
+  const code   = inputs.map(i => i.value).join('');
+  
+  if (code.length < 6) { toast('נא להזין את כל 6 הספרות'); return; }
+  
+  if (code !== currentOTP) {
+    toast('❌ קוד שגוי — נסה שוב');
+    inputs.forEach(i => { i.value=''; i.style.borderColor='#c0392b'; });
+    inputs[0].focus();
+    return;
+  }
+
+  // OTP correct — submit booking
+  toast('מאשר תור...');
+  const notes = document.getElementById('bNotes')?.value || '';
+  const name  = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.trim();
+  const addr  = document.getElementById('fAddr').value.trim();
+
+  // Save to Supabase
+  const { data: client } = await sb.from('clients')
+    .select('*').eq('phone', phone).single();
+  
+  let clientId = client?.id;
+  if (!clientId) {
+    const { data: newClient } = await sb.from('clients')
+      .insert({ name, phone, address: addr, gardener_id: B.gardener?.id })
+      .select().single();
+    clientId = newClient?.id;
+  }
+
+  await sb.from('appointments').insert({
+    gardener_id: B.gardener?.id,
+    client_id:   clientId,
+    date:        B.date,
+    time_slot:   B.time,
+    work_type:   B.workType,
+    status:      'confirmed',
+    client_notes: notes,
+  });
+
+  // Send confirmation to client
+  const confirmMsg = 
+    `✅ התור אושר! 🌿\n\n` +
+    `📅 תאריך: ${fmtD(B.date)}\n` +
+    `⏰ שעה: ${B.time}\n` +
+    `🔧 שירות: ${B.workType}\n\n` +
+    `נתראה! 😊`;
+  await sendWhatsApp(phone, confirmMsg);
+
+  // Send notification to gardener (test number)
+  const gardenerMsg =
+    `🌿 תור חדש!\n\n` +
+    `👤 ${name}\n` +
+    `📞 ${phone}\n` +
+    `📅 ${fmtD(B.date)} ב-${B.time}\n` +
+    `🔧 ${B.workType}\n` +
+    `📍 ${addr}`;
+  await sendWhatsApp('0524869050', gardenerMsg);
+
+  // Show success
+  document.getElementById('bookOTP').style.display = 'none';
+  document.getElementById('bookSuccess').style.display = 'block';
+  document.getElementById('successDetails').textContent = `${fmtD(B.date)} בשעה ${B.time}`;
+}
+
+async function resendOTP() {
+  currentOTP = generateOTP();
+  const name = document.getElementById('fName').value.trim();
+  const msg  = `שלום ${name}! 🌿\n\nקוד חדש: *${currentOTP}*`;
+  await sendWhatsApp(otpPhone, msg);
+  toast('📱 קוד חדש נשלח!');
+}
+
+function backFromOTP() {
+  document.getElementById('bookOTP').style.display   = 'none';
+  document.getElementById('bookStep3').style.display = 'block';
+}
+
 function fmt(y,m,d){return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
 function fmtD(s){
   if(!s) return '';
