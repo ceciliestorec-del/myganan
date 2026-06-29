@@ -563,30 +563,20 @@ function reset() {
 
 // ── HELPERS ──
 
-// ─── TWILIO WHATSAPP ───
-const TWILIO_SID   = 'AC1826426bdbb46e82864461b860068b22';
-const TWILIO_TOKEN = '43b0748c85bd46ee6fcd052f76634549';
-const TWILIO_WA    = 'whatsapp:+14155238886';
+// ─── MAKE.COM WEBHOOK ───
+const MAKE_WEBHOOK = 'https://hook.eu1.make.com/bq7ikli5tan6hmvym8hgn5xwjxom2if2';
 
 async function sendWhatsApp(to, message) {
   const phone = to.replace(/\D/g,'').replace(/^0/,'972');
-  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`;
-  const body = new URLSearchParams({
-    From: TWILIO_WA,
-    To: `whatsapp:+${phone}`,
-    Body: message,
-  });
   try {
-    const res = await fetch(url, {
+    await fetch(MAKE_WEBHOOK, {
       method: 'POST',
-      headers: {
-        'Authorization': 'Basic ' + btoa(`${TWILIO_SID}:${TWILIO_TOKEN}`),
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: 'whatsapp:+' + phone,
+        message: message,
+      }),
     });
-    const data = await res.json();
-    return data;
   } catch(e) {
     console.error('WhatsApp error:', e);
   }
